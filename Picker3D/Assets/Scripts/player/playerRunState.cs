@@ -20,6 +20,7 @@ public class playerRunState : playerBaseState
             collisionInfo.gameObject.SetActive(false);
             charachter.Balls.ThrowBalls();
             charachter.SwitchState(charachter.StopState);
+            collisionInfo.gameObject.GetComponentInParent<platformController>().StartPlatform();
         }
     }
 
