@@ -4,13 +4,12 @@ using UnityEngine;
 
 public class playerRunState : playerBaseState
 {
-    private float speed = 10.0f;
+    private float speed;
     private Transform transfrm;
     private Rigidbody rgb;
     public override void EnterState(playerStateManager charachter)
     {
-        transfrm = charachter.GetComponent<Transform>();
-        rgb = charachter.GetComponent<Rigidbody>();
+        init(charachter);
     }
 
     public override void OnTriggerEnter(playerStateManager charachter, Collider collisionInfo)
@@ -22,6 +21,11 @@ public class playerRunState : playerBaseState
             charachter.SwitchState(charachter.StopState);
             collisionInfo.gameObject.GetComponentInParent<platformController>().StartPlatform();
         }
+        else if(collisionInfo.CompareTag("Finish"))
+        {
+            collisionInfo.GetComponentInParent<finishController>().finishWorks();
+            charachter.SwitchState(charachter.StopState);
+        }
     }
 
     public override void UpdateState(playerStateManager charachter)
@@ -32,11 +36,21 @@ public class playerRunState : playerBaseState
 
     private void run()
     {
-        rgb.MovePosition(transfrm.position += new Vector3(-speed * Time.deltaTime, 0, 0));
+        rgb.MovePosition(transfrm.position += new Vector3(-speed * Time.fixedDeltaTime, 0, 0));
     }
     private void runHorizontal()
     {
         float horizontal = Input.GetAxis("Horizontal");
-        rgb.MovePosition(transfrm.position += new Vector3(0, 0, speed * Time.deltaTime * horizontal));
+        var vec = transfrm.position;
+        var pos = vec += new Vector3(0, 0, speed * Time.fixedDeltaTime * horizontal);
+        pos.z = Mathf.Clamp(pos.z, -10f, 10f);
+        transfrm.position = pos;
+            
+    }
+    private void init(playerStateManager charachter)
+    {
+        speed = charachter.Playerdata.speed;
+        transfrm = charachter.GetComponent<Transform>();
+        rgb = charachter.GetComponent<Rigidbody>();
     }
 }

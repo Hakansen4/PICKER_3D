@@ -2,22 +2,32 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using TMPro;
 
 public class platformController : MonoBehaviour
 {
-    private int needBallCount = 10;
+    [SerializeField] private PlatformData Platformdata;
+
+    private int needBallCount;
     private int collectedBallCount = 0;
-    private float checkTime = 8;
+    private float checkTime;
     private float timer = 0;
 
     private bool started = false;
+    private bool finished = false;
 
+    [SerializeField] private TextMeshProUGUI _text;
     [SerializeField] private playerStateManager Player;
     [SerializeField] private GameObject _Door1;
     [SerializeField] private GameObject _Door2;
     [SerializeField] private GameObject _MoveObject;
     [SerializeField] private Transform _MovePoss;
+    [SerializeField] private GameObject _LevelFailedScreen;
 
+    private void Awake()
+    {
+        init();
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Ball"))
@@ -27,8 +37,8 @@ public class platformController : MonoBehaviour
     }
     private void Update()
     {
-        //Debug.Log("Collected : " + collectedBallCount);
-        if(started)
+        updateText();
+        if (started  &&  !finished)
         {
             Play();
         }
@@ -48,7 +58,7 @@ public class platformController : MonoBehaviour
         if(Time.time - timer > checkTime    &&  collectedBallCount < needBallCount)
         {
             //Failed
-            Debug.Log("Failed");
+            _LevelFailedScreen.SetActive(true);
         }
     }
     private void checkPass()
@@ -71,5 +81,15 @@ public class platformController : MonoBehaviour
     private void movePlayer()
     {
         Player.SwitchState(Player.RunState);
+        finished = true;
+    }
+    private void updateText()
+    {
+        _text.text = collectedBallCount.ToString() + " / " + needBallCount.ToString();
+    }
+    private void init()
+    {
+        needBallCount = Platformdata.NeedBall;
+        checkTime = Platformdata.CheckTime;
     }
 }

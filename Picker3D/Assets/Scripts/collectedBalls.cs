@@ -37,7 +37,7 @@ public class collectedBalls : MonoBehaviour
     {
         foreach (var item in Balls)
         {
-            item.GetComponent<Rigidbody>().AddForce(new Vector3(-400, 400, 0));
+            item.GetComponent<Rigidbody>().AddForce(new Vector3(-500, 200, 0));
         }
     }
 }

@@ -6,6 +6,8 @@ public class playerStateManager : MonoBehaviour
 {
     public static playerStateManager instance;
 
+    public PlayerData Playerdata;
+
     #region States
     public playerBaseState CurrentState;
     public playerStopState StopState = new playerStopState();
@@ -26,7 +28,7 @@ public class playerStateManager : MonoBehaviour
     {
         CurrentState.OnTriggerEnter(this, collisionInfo);
     }
-    void Update()
+    void FixedUpdate()
     {
         CurrentState.UpdateState(this);
     }
